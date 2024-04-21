@@ -1,4 +1,4 @@
-{ buildGoModule, buildNpmPackage, fetchFromGitHub, lib }:
+{ buildGoModule, buildNpmPackage, fetchFromGitHub, lib, nixosTests }:
 
 let
   frontend = buildNpmPackage rec {
@@ -49,6 +49,7 @@ buildGoModule rec {
 
   passthru = {
     inherit frontend;
+    tests.test = nixosTests.filebrowser;
   };
 
   meta = with lib; {
