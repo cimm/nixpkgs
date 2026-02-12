@@ -19,23 +19,23 @@
 
 buildGoModule (finalAttrs: {
   pname = "navidrome";
-  version = "0.60.0";
+  version = "0.59.0";
 
   src = fetchFromGitHub {
     owner = "navidrome";
     repo = "navidrome";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-K7Cen0gADYQc0jxd2keBpTJlyQyuYL02j7/yiNtjZvQ=";
+    hash = "sha256-YXyNnjaLgu4FXvgsbbzCOZRIuN96h+KDrXmJe1607JI=";
   };
 
-  vendorHash = "sha256-DCz/WKZXnZy109WgStCK7NJg8VpR3IJEaQZLMDXdegk=";
+  vendorHash = "sha256-FFtTQuXb5GYxZmUiNjZNO6K8QYF0TLH4JU2JmAzZhqQ=";
 
   npmRoot = "ui";
 
   npmDeps = fetchNpmDeps {
     inherit (finalAttrs) src;
     sourceRoot = "${finalAttrs.src.name}/ui";
-    hash = "sha256-Z1kSRNSG1zeLA6rtbcTdLJnNWclsVTS5Xfc4D9M0dl4=";
+    hash = "sha256-RTye1ZbxLqfkZUvV0NLN7wcRnri3sC5Lfi8RXVG1bLM=";
   };
 
   nativeBuildInputs = [
@@ -55,16 +55,13 @@ buildGoModule (finalAttrs: {
     zlib
   ];
 
-  excludedPackages = [
-    "plugins"
-  ];
-
   ldflags = [
     "-X github.com/navidrome/navidrome/consts.gitSha=${finalAttrs.src.rev}"
     "-X github.com/navidrome/navidrome/consts.gitTag=v${finalAttrs.version}"
   ];
 
   CGO_CFLAGS = lib.optionals stdenv.cc.isGNU [ "-Wno-return-local-addr" ];
+  CGO_CFLAGS_ALLOW = ".*--define-prefix.*";
 
   postPatch = ''
     patchShebangs ui/bin/update-workbox.sh
@@ -99,6 +96,7 @@ buildGoModule (finalAttrs: {
     sourceProvenance = with lib.sourceTypes; [ fromSource ];
     maintainers = with lib.maintainers; [
       aciceri
+      squalus
       tebriel
     ];
     # Broken on Darwin: sandbox-exec: pattern serialization length exceeds maximum (NixOS/nix#4119)
